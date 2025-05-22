@@ -28,10 +28,12 @@ function! s:comment() " abort
     call setpos(".", start_pos)
 endfunction
 
+
 function! s:uncomment() " abort
     let start_pos = getpos(".")
     call setpos(".", start_pos)
 endfunction
+
 
 function! vicom#comment_lines(...) range " abort
     let ext_com = s:get_com()
