@@ -14,4 +14,4 @@ endif
 
 let g:loaded_vicom = 1
 
-command! -nargs=0 ViComLines call vicom#comment_lines()
+command! -range ViComLines <line1>,<line2> call vicom#comment_lines()
