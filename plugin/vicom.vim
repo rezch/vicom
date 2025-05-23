@@ -8,7 +8,7 @@
 scriptencoding utf-8
 
 
-if exists(g:loaded_vicom)
+if exists('g:loaded_vicom')
     finish
 endif
 
