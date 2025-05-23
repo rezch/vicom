@@ -29,3 +29,12 @@ call plug#end()
 
 ## Usage
 Use `ViComLines` to comment/uncomment some line or lines range
+
+You can bind this command in your vimrc file like this:
+```vim
+nnoremap <leader>c      :ViComLines<CR>
+vnoremap <leader>c <C-S>:ViComLines<CR>
+inoremap <leader>c <C-O>:ViComLines<CR>
+```
+
+Use `shift + V` to select lines and then `ViComLines` to (un)comment them.
