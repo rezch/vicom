@@ -22,10 +22,10 @@ endfunction
 function! s:is_commented(lstart, lend, ext_com) abort
     for n in range (a:lstart, a:lend)
         let str = trim(getline(n))
-        if len(str) < len(a:ext_com)
+        if len(str) == 0
             continue
         endif
-        if str[:len(a:ext_com) - 1] != a:ext_com
+        if len(str) < len(a:ext_com) || str[:len(a:ext_com) - 1] != a:ext_com
             return v:false
         endif
         unlet str
@@ -35,7 +35,7 @@ endfunction
 
 
 function! s:get_start_pos(lstart, lend) abort
-    let min_pos = 99
+    let min_pos = 0x7fffffff
     for n in range (a:lstart, a:lend)
         normal! _
         let min_pos = min([ min_pos, getpos('.')[2] ])
