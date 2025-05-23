@@ -28,4 +28,4 @@ call plug#end()
 </details>
 
 ## Usage
-Use ViComLines to comment/uncomment some line or lines range
+Use `ViComLines` to comment/uncomment some line or lines range
