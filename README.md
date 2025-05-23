@@ -1,4 +1,4 @@
-### vicom
+# ViCom
 
 ## Installation
 <details>
