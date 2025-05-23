@@ -1,8 +1,13 @@
+" ==============================================================================
+" Available extentions
+" ==============================================================================
+
+
 let s:ext_to_com = {
-     \ 'sh': '#',
-     \ 'py': '#',
-     \ 'vim': '"'
-\}
+            \ 'sh': '#',
+            \ 'py': '#',
+            \ 'vim': '"'
+            \} " default: '//'
 
 
 " ==============================================================================
@@ -12,23 +17,18 @@ let s:ext_to_com = {
 
 function! s:get_com() abort
     let ext = expand('%:e')
-    if has_key(s:ext_to_com, ext)
-        return s:ext_to_com[ext]
-    endif
-    return '//'
+    return has_key(s:ext_to_com, ext)
+                \ ? s:ext_to_com[ext]
+                \ : '//'
 endfunction
 
 
 function! s:is_commented(lstart, lend, ext_com) abort
     for n in range (a:lstart, a:lend)
         let str = trim(getline(n))
-        if len(str) == 0
-            continue
-        endif
-        if len(str) < len(a:ext_com) || str[:len(a:ext_com) - 1] != a:ext_com
+        if len(str) != 0 && str[:len(a:ext_com) - 1] != a:ext_com
             return v:false
         endif
-        unlet str
     endfor
     return v:true
 endfunction
@@ -37,8 +37,7 @@ endfunction
 function! s:get_start_pos(lstart, lend) abort
     let min_pos = 0x7fffffff
     for n in range (a:lstart, a:lend)
-        normal! _
-        let min_pos = min([ min_pos, getpos('.')[2] ])
+        let min_pos = min([ min_pos, match(getline(n), '\S\+') ])
     endfor
     return min_pos
 endfunction
@@ -52,12 +51,12 @@ endfunction
 
 
 function! s:comment(lstart, lend, ext_com) abort
-    let start_ind = s:get_start_pos(a:firstline, a:lastline) - 1
+    let start_ind = s:get_start_pos(a:lstart, a:lend)
     for n in range (a:lstart, a:lend)
         let str = getline(n)
         call setline(n,
-        \    repeat(' ', start_ind) . a:ext_com . ' ' . str[start_ind:]
-        \ )
+                    \ repeat(' ', start_ind) . a:ext_com . ' ' . str[start_ind:]
+                    \ )
     endfor
 endfunction
 
@@ -65,10 +64,10 @@ endfunction
 function! s:uncomment(lstart, lend, ext_com) abort
     for n in range (a:lstart, a:lend)
         let str = getline(n)
-        let com_to_delete = a:ext_com
-        if str =~ com_to_delete . ' '
-            let com_to_delete .= ' '
-        endif
+        let com_to_delete =
+                    \ str =~ a:ext_com . ' ' ?
+                    \ a:ext_com . ' ' :
+                    \ a:ext_com
         call setline(n, substitute(str, com_to_delete, '', ''))
     endfor
 endfunction
@@ -77,6 +76,7 @@ endfunction
 " ==============================================================================
 " Global Functions
 " ==============================================================================
+
 
 " Function: vicom#comment_lines(...)
 " If lines range has uncommented line, comments all range
