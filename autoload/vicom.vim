@@ -44,6 +44,13 @@ function! s:get_start_pos(lstart, lend) abort
 endfunction
 
 
+function! s:trim_trailing_whitespaces(lstart, lend) abort
+    for n in range (a:lstart, a:lend)
+        call setline(n, substitute(getline(n), '\s\+$', '', ''))
+    endfor
+endfunction
+
+
 function! s:comment(lstart, lend, ext_com) abort
     let start_ind = s:get_start_pos(a:firstline, a:lastline) - 1
     for n in range (a:lstart, a:lend)
@@ -82,5 +89,6 @@ function! vicom#comment_lines(...) range abort
     else
         call s:comment(a:firstline, a:lastline, ext_com)
     endif
+    call s:trim_trailing_whitespaces(a:firstline, a:lastline)
     call setpos(".", start_pos)
 endfunction
