@@ -13,5 +13,7 @@ if exists('g:loaded_vicom')
 endif
 
 let g:loaded_vicom = 1
+let g:ViComExtentions = get(g:, 'ViComExtentions', {})
+let g:ViComDefaultCom = get(g:, 'ViComDefaultCom', '//')
 
 command! -range ViComLines <line1>,<line2> call vicom#comment_lines()

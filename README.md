@@ -38,3 +38,14 @@ inoremap <leader>c <C-O>:ViComLines<CR>
 ```
 
 Use `shift + V` to select lines and then `ViComLines` to (un)comment them.
+
+To customize comment type, use g:ViComExtentions dict, where key - file extention, value - comment.
+```vim
+let g:ViComExtentions = { 'lhs': '--' }
+```
+
+Default comment, for all unknown extentions is '//'.
+To change it, use
+```vim
+let g:ViComDefaultCom = '#'
+```

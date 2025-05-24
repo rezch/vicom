@@ -3,11 +3,13 @@
 " ==============================================================================
 
 
-let s:ext_to_com = {
+let s:extentions =
+            \ extend({
             \ 'sh': '#',
             \ 'py': '#',
             \ 'vim': '"'
-            \} " default: '//'
+            \ },
+            \ g:ViComExtentions)
 
 
 " ==============================================================================
@@ -15,11 +17,14 @@ let s:ext_to_com = {
 " ==============================================================================
 
 
+let s:int_max = 0x7fffffff
+
+
 function! s:get_com() abort
     let ext = expand('%:e')
-    return has_key(s:ext_to_com, ext)
-                \ ? s:ext_to_com[ext]
-                \ : '//'
+    return has_key(s:extentions, ext)
+                \ ? s:extentions[ext]
+                \ : g:ViComDefaultCom
 endfunction
 
 
@@ -35,9 +40,13 @@ endfunction
 
 
 function! s:get_start_pos(lstart, lend) abort
-    let min_pos = 0x7fffffff
+    let min_pos = s:int_max
     for n in range (a:lstart, a:lend)
-        let min_pos = min([ min_pos, match(getline(n), '\S\+') ])
+        let pos = match(getline(n), '\S\+')
+        if pos == -1
+            continue
+        endif
+        let min_pos = min([ min_pos, pos ])
     endfor
     return min_pos
 endfunction
@@ -52,6 +61,9 @@ endfunction
 
 function! s:comment(lstart, lend, ext_com) abort
     let start_ind = s:get_start_pos(a:lstart, a:lend)
+    if start_ind == s:int_max
+        return
+    endif
     for n in range (a:lstart, a:lend)
         let str = getline(n)
         call setline(n,
